@@ -1,0 +1,105 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+
+namespace Traningcost
+{
+    public partial class Form1 : Form
+    {
+        //corse location
+        private bool[] corsesindex = { false, false, false, false, false };
+        private string locationindex = "";
+        private int[,] timecost = { { 3, 1000 }, { 3, 800 }, { 3, 1500 }, { 5, 1300 }, { 1, 500 } };
+        private int[] locationcost = { 150, 225, 175, 300, 175, 150 };
+        private bool[] locationcorsechosen = { false, false };
+
+        public Form1()
+        {
+            InitializeComponent();
+        }
+        private void centerlb()
+        {
+            //outputLB.Text = $"";
+            //width height
+            int[] buffer = { 0, 75 };
+            int width = (classCHBX.Width / 2) - (outputLB.Width / 2) + buffer[0];
+            int height = (classCHBX.Height / 2) - (outputLB.Height / 2) + buffer[1];
+            outputLB.Location = new Point(width, height);
+        }
+
+        private void calculatecost()
+        {
+            outputLB.Text = $"{locationcorsechosen[0]}, {locationcorsechosen[1]}";
+            if (locationcorsechosen[0] && locationcorsechosen[1])
+            {
+                outputLB.Text = "passed choses";
+                int totalcost = 0;
+                for (int i = 0; i < corsesindex.Length; i++)
+                {
+                    outputLB.Text = "in for";
+                    if (corsesindex[i])
+                    {
+                        outputLB.Text = "in last if";
+                        totalcost += timecost[i, 1];
+                        //totalcost += timecost[i, 0] * locationcost[locationindex];
+                    }
+                }
+                outputLB.Text = $"Total cost: ${totalcost}";
+                centerlb();
+            }
+        }
+
+        private void checkedListBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            locationcorsechosen[0] = false;
+            for (int i = 0; i < corsesindex.Length; i++)
+            {
+                if (classCHBX.GetItemChecked(i))
+                {
+                    corsesindex[i] = true;
+                    locationcorsechosen[0] = true;
+                }
+                else
+                {
+                    corsesindex[i] = false;
+                }
+            }
+            outputLB.Text = "index changed";
+            calculatecost();
+        }
+
+        private void groupBox1_Enter(object sender, EventArgs e)
+        {
+            bool[] locationbool = { austinRBT.Checked, ChicagoRBT.Checked, DallasRBT.Checked, phoenixRBT.Checked, raleighRBT.Checked};
+            locationcorsechosen[1] = false;
+            foreach (Control c in groupBox1.Controls)
+            {
+                if (c.GetType() == typeof(RadioButton))
+                {
+                    RadioButton rb = c as RadioButton;
+                    outputLB.Text = $"{rb.Name}";
+                    if (rb.Checked)
+                    {
+                        locationcorsechosen[1] = true;
+                        locationindex = rb.Name;
+                        outputLB.Text = $"{locationcorsechosen[1]}";
+                    }
+                }
+            }
+            //outputLB.Text = $"{locationcorsechosen[1]}";
+            //calculatecost();
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            centerlb();
+        }
+    }
+}
